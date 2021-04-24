@@ -64,7 +64,7 @@ public class DrawShapes extends JFrame
             }
         });
     }
-    
+
     private void initializeMouseListener()
     {
         MouseAdapter a = new MouseAdapter() {
@@ -142,6 +142,8 @@ public class DrawShapes extends JFrame
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
                 // TODO use this to grow/shrink shapes
+            	System.out.println("Mouse Wheel");
+            	
             }
             
         };
@@ -208,6 +210,8 @@ public class DrawShapes extends JFrame
                 }
             }
         });
+        
+        
         fileMenu.addSeparator();
         // edit
         JMenuItem itemExit = new JMenuItem ("Exit");
@@ -227,10 +231,9 @@ public class DrawShapes extends JFrame
         // color menu
         JMenu colorMenu = new JMenu("Color");
         menuBar.add(colorMenu);
-
         
         // red color
-        addToMenu(colorMenu, "Red", new ActionListener() {
+        addColorToMenu(colorMenu, "Red", Color.RED, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String text=e.getActionCommand();
@@ -241,7 +244,7 @@ public class DrawShapes extends JFrame
 		});
         
         // blue color
-        addToMenu(colorMenu, "Blue", new ActionListener() {
+        addColorToMenu(colorMenu, "Blue", Color.BLUE, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String text=e.getActionCommand();
                 System.out.println(text);
@@ -251,15 +254,23 @@ public class DrawShapes extends JFrame
         });
         
         //attempt at green color
-        addToMenu(colorMenu, "Green", new ActionListener() {
+        addColorToMenu(colorMenu, "Green", Color.GREEN, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String text=e.getActionCommand();
                 System.out.println(text);
-                // change the color instance variable to blue
+                // change the color instance variable to green
                 color = Color.GREEN;
             }
         });
-        
+        //new secondary color
+        addColorToMenu(colorMenu, "Purple", new java.awt.Color(164,43,178) , new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String text=e.getActionCommand();
+                System.out.println(text);
+                color =new java.awt.Color(164,43,178);
+            }
+        });
+
         // shape menu
         JMenu shapeMenu = new JMenu("Shape");
         menuBar.add(shapeMenu);
@@ -308,14 +319,29 @@ public class DrawShapes extends JFrame
         });
         
         // move option
-        addToMenu(operationModeMenu, "Move", new ActionListener() {
+       addToMenu(operationModeMenu, "Move", new ActionListener() {
+    	   public void actionPerformed(ActionEvent e) {
+               String text=e.getActionCommand();
+                // currently this just prints
+                System.out.println(text);               
+                
+            }
+    	   
+          
+        });
+       
+        
+        
+        //deletes selected shape
+        addToMenu(operationModeMenu, "Delete", new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String text=e.getActionCommand();
-                // currently this just prints
                 System.out.println(text);
+                scene.removeSelected();
+                repaint();
             }
         });
-        
+
 
         // set the menu bar for this frame
         this.setJMenuBar(menuBar);
@@ -326,6 +352,13 @@ public class DrawShapes extends JFrame
     	JMenuItem menuItem = new JMenuItem(title);
     	menu.add(menuItem);
     	menuItem.addActionListener(listener);
+    }
+    
+    private void addColorToMenu(JMenu menu, String title, Color color, ActionListener listener) {
+    	JMenuItem menuItem = new JMenuItem(title);
+    	menu.add(menuItem);
+    	menuItem.addActionListener(listener);
+    	menuItem.setBackground(color);
     }
     
     /**
@@ -341,6 +374,10 @@ public class DrawShapes extends JFrame
             		scene.moveSelected(-50, 0);
             	} else if (e.getKeyCode() == KeyEvent.VK_UP) {
             		scene.moveSelected(0, -50);
+            	} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+            		scene.moveSelected(0, 50);
+            	} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            		scene.moveSelected(50, 0);
             	}
             	repaint();
             }
